@@ -1,0 +1,151 @@
+#Gidiobot door Gidioot
+
+import discord
+from discord.ext import commands
+from discord.ext.commands import bot
+import asyncio
+import random
+
+bot = commands.Bot(command_prefix='!G ')
+
+bot.remove_command('help')
+
+
+
+@bot.event
+async def on_ready():
+    print("Hallo allemaal!")
+    print("Mijn naam is " + bot.user.name)
+    print("Mijn ID is: " + bot.user.id)
+    print('-------------------------------')
+    await bot.change_presence(game=discord.Game(name='!G help'))
+
+
+
+@bot.command(pass_context=True)
+async def help(ctx):
+    embed = discord.Embed(title='Help!', description='Alle commands op een rijtje', color=0xff0000)
+    embed.add_field(name='Info', value='**!G info [naam]** - Krijg info over een persoon\
+    \n**!G botinfo** - Krijg info over mij\
+    \n**!G serverinfo** - Krijg info over deze server', inline=False)
+    embed.add_field(name='Social media', value='**!G youtube** - Krijg een link naar mijn YouTube kanaal\
+    \n**!G twitch** - Krijg een link naar mijn Twitch kanaal\
+    \n**!G instagram** - Krijg een link naar mijn Instagram account\
+    \n**!G website** - Krijg een link naar mijn website', inline=False)
+    embed.add_field(name='Voor de lol', value='**!G gooi** - Gooi een munt op\
+    \n**!G getal** - Krijg een random getal tussen de 1 en de 10\
+    \n**!G spam [bericht]** - Je bericht wordt 10 keer herhaald', inline=False)
+    embed.add_field(name='Help', value='**!G help** - Krijg dit scherm weer te zien', inline=False)
+    await bot.say(embed=embed)
+
+@bot.command(pass_context=True)
+async def info(ctx, user: discord.Member):
+    embed = discord.Embed(title='{}\'s info'.format(user.name), description='Dit is wat ik gevonden heb over {}'.format(user.name), color=0x00ff00)
+    embed.add_field(name='Naam', value=user.name)
+    embed.add_field(name='ID', value=user.id)
+    embed.add_field(name='Status', value=user.status)
+    embed.add_field(name='Hoogste rol', value=user.top_role)
+    embed.add_field(name='In deze server sinds', value=user.joined_at)
+    embed.set_thumbnail(url=user.avatar_url)
+    await bot.say(embed=embed)
+
+@bot.command(pass_context=True)
+async def serverinfo(ctx):
+    embed = discord.Embed(title='{}\'s info'.format(ctx.message.server.name), description='Dit is wat ik gevonden heb over deze server', color=0x00ff00)
+    embed.add_field(name='Server naam', value=ctx.message.server.name)
+    embed.add_field(name='ID', value=ctx.message.server.id)
+    embed.add_field(name='Aantal rollen', value=len(ctx.message.server.roles))
+    embed.add_field(name='Aantal leden', value=len(ctx.message.server.members))
+    embed.set_thumbnail(url=ctx.message.server.icon_url)
+    await bot.say(embed=embed)
+
+@bot.command(pass_context=True)
+async def botinfo(ctx):
+    embed = discord.Embed(title='{}\'s info'.format(bot.user.name), description='Dit is wat ik gevonden heb over mijzelf', color=0x00ff00)
+    embed.add_field(name='Naam', value=bot.user.name)
+    embed.add_field(name='ID', value=bot.user.id)
+    embed.set_thumbnail(url=bot.user.avatar_url)
+    await bot.say(embed=embed)
+
+
+
+@bot.command(pass_context=True)
+async def youtube(ctx):
+    await bot.say('Dit is mijn YouTube kanaal: https://www.youtube.com/channel/UCwiMhRjXDplpv9h_oJdgOQg')
+
+@bot.command(pass_context=True)
+async def twitch(ctx):
+    await bot.say('Dit is mijn Twitch kanaal: https://www.twitch.tv/gidioot')
+
+@bot.command(pass_context=True)
+async def instagram(ctx):
+    await bot.say('Dit is mijn Instagram account: https://www.instagram.com/gidioot/')
+
+@bot.command(pass_context=True)
+async def website(ctx):
+    await bot.say('Dit is mijn website: https://gidioot.jimdo.com/')
+
+
+
+@bot.command(pass_context=True)
+async def gooi(ctx):
+    choice = random.randint(1,2)
+    if choice == 1:
+        await bot.say('Kop!')
+    if choice == 2:
+        await bot.say('Munt!')
+
+@bot.command(pass_context=True)
+async def getal(ctx):
+    choice = random.randint(1,10)
+    await bot.say(choice)
+
+@bot.command(pass_context=True)
+async def spam(ctx, iets: list):
+    iets = ctx.message.content.split(' ')
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+    await bot.say('{}'.format(' '.join(iets[2:])))
+
+
+
+@bot.command(pass_context=True)
+@commands.has_role('De (eigenlijk geen) Grote Gidioot')
+async def live(ctx, tijd: str):
+    await bot.delete_message(ctx.message)
+    await bot.say('@everyone Vanavond ben ik om ' + tijd + ' live! Kom kijken op https://twitch.tv/gidioot')
+
+@bot.command(pass_context=True)
+@commands.has_role('De (eigenlijk geen) Grote Gidioot')
+async def kick(ctx, user: discord.Member, reden: list):
+    reden = ctx.message.content.split(' ')
+    await bot.say('Dag ' + user.name + ', je wordt gekickt vanwege: {}'.format(' '.join(reden[3:])))
+    await bot.kick(user)
+
+@bot.command(pass_context=True)
+@commands.has_role('De (eigenlijk geen) Grote Gidioot')
+async def ban(ctx, user: discord.Member, reden: list):
+    reden = ctx.message.content.split(' ')
+    await bot.say('Dag ' + user.name + ', je wordt geband vanwege: {}'.format(' '.join(reden[3:])))
+    await bot.ban(user)
+
+
+
+@bot.command(pass_context=True)
+async def test(ctx, reden: list):
+    reden = ctx.message.content.split(' ')
+    await bot.say('{}'.format(' '.join(reden[2:])))
+
+
+
+
+#await bot.delete_message(ctx.message)
+
+bot.run('NDI4NjM5MDMyNDI4MTk5OTQ2.DZ6R9w.KVYbi30UXQoiugcamjELos37VCs')
